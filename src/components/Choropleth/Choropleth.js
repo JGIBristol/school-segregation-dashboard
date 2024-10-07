@@ -41,7 +41,7 @@ export default function Choropleth({ local_authority, changeLocalAuthority }) {
   const attribution =
     '<a href="https://www.mapbox.com/about/maps/">Mapbox</a> &copy <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a><strong><a href="https://labs.mapbox.com/contribute/" target="_blank"><br/>Improve this map</a></strong>';
 
-  const position = [53, -5];
+  const position = [53, -6];
 
 
 
@@ -176,7 +176,7 @@ export default function Choropleth({ local_authority, changeLocalAuthority }) {
   };
 
   return (
-    <MapContainer center={position} zoom={6.4}>
+    <MapContainer center={position} zoom={7}>
       <TileLayer url={url} attribution={attribution} />
       <GeoJSON
         data={areas}
