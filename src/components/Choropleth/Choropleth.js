@@ -9,8 +9,8 @@ import "./Choropleth.css";
 // import localAuthorities from "../../../../data/hh_size_data.json";
 import areas from "../../data/spatial_data.json";
 
-import { useEffect, useState, useRef, useCallback} from "react";
-import { noConflict } from "leaflet";
+import { useEffect, useState} from "react";
+// import { noConflict } from "leaflet";
 
 
 export default function Choropleth({ local_authority, changeLocalAuthority }) {
@@ -31,7 +31,7 @@ export default function Choropleth({ local_authority, changeLocalAuthority }) {
 
     console.log('Is select within useEffect');
     console.log(isSelect);
-  }, [isSelect]);
+  }, [isSelect,changeLocalAuthority]);
 
 
   const map_box_token =

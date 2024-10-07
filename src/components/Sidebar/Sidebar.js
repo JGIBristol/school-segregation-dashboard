@@ -25,6 +25,7 @@ function GetImage({ url, local_authority}) {
   } else {
     return (
       <img className="plot-image"
+      alt="segregation-plot"
         src={
           url
         }
@@ -104,7 +105,6 @@ export default function Sidebar({ local_authority }) {
     }
   }, [local_authority, year, plotType]);
 
-  let val_to_display = local_authority["name"];
   return (
     <div className="sidebar-content">
       <h1 className="sidebar-header">Spatial Analysis Dashboard Mockup</h1>
