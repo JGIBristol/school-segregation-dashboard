@@ -21,6 +21,13 @@ export default function Choropleth({ local_authority, changeLocalAuthority }) {
     link: local_authority['link'],
   });
 
+
+  const [isHighlight, setIsHighlight] = useState({
+    name: local_authority['name'],
+    link: local_authority['link'],
+  });
+
+
   // When initial state updates, then update parent state
   useEffect(() => {
     changeLocalAuthority({
@@ -71,11 +78,15 @@ export default function Choropleth({ local_authority, changeLocalAuthority }) {
 
 
   // A closure function for updating styles
-  const styleClosure = (isSelect) => {
+  const styleClosure = (isSelect, isHighlight) => {
     return (feature) => {
  
       if (feature["properties"]["link"] === isSelect["link"]) {
         return styleSelected;
+      }
+
+      if (feature["properties"]["link"] === isHighlight["link"]) {
+        return styleHighlight;
       }
 
       return {
@@ -108,13 +119,13 @@ export default function Choropleth({ local_authority, changeLocalAuthority }) {
       : "#FFEDA0";
   };
 
-  const onEachFeatureClosure = (isSelect, setIsSelect) => {
+  const onEachFeatureClosure = (isSelect, setIsSelect, isHighlight, setIsHighlight) => {
     return (feature, layer) => {
 
 
       layer.on({
-        mouseover: (e) => highlightFeature(e, feature, isSelect),
-        mouseout: (e) => resetHighlight(e, feature, isSelect),
+        mouseover: (e) => highlightFeature(e, feature, isSelect, isHighlight, setIsHighlight),
+        mouseout: (e) => resetHighlight(e, feature, isSelect, isHighlight, setIsHighlight),
         click: (e) => clickFeature(e, feature, isSelect, setIsSelect),
       });
     };
@@ -123,6 +134,12 @@ export default function Choropleth({ local_authority, changeLocalAuthority }) {
 
   const highlightFeature = (e, feature, isSelect) => {
     const layer = e.target;
+
+    setIsHighlight({
+      name: feature["properties"]["LAD23NM"],
+      link: feature["properties"]["link"],
+    });
+
     layer.setStyle(styleHighlight);
     layer.bringToFront();
   };
@@ -134,6 +151,8 @@ export default function Choropleth({ local_authority, changeLocalAuthority }) {
     //   layer.setStyle(styleSelected);
     // } else {
       
+
+
       layer.setStyle(styleNormal);
     
 
@@ -180,8 +199,8 @@ export default function Choropleth({ local_authority, changeLocalAuthority }) {
       <TileLayer url={url} attribution={attribution} />
       <GeoJSON
         data={areas}
-        style={styleClosure( isSelect)}
-        onEachFeature={onEachFeatureClosure(isSelect, setIsSelect)}
+        style={styleClosure( isSelect, isHighlight)}
+        onEachFeature={onEachFeatureClosure(isSelect, setIsSelect, isHighlight, setIsHighlight)}
       />
       <ZoomControl position="topright" />
     </MapContainer>
