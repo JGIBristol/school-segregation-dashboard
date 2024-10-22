@@ -47,7 +47,7 @@ function constructUrl({local_authority, year, plotType}){
     // has the same year and plot type as args
     const plot_info_to_use = plot_info.find((element) => element["link"] === local_authority["link"] & element["year"] === year.toString() & element["plot_type_store"] === plotType);
 
-    console.log(plot_info_to_use);
+    // console.log(plot_info_to_use);
 
     // return(undefined)
     if (plot_info_to_use){

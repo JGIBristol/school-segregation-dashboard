@@ -1,6 +1,6 @@
 // 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import Choropleth from '../Choropleth/'
 import Sidebar from '../Sidebar/'
 
@@ -13,9 +13,15 @@ const [local_authority, setLocalAuthority] = useState({
   link: false
 })
 
-const changeLocalAuthority = (value) => {
+
+// Use callback to prevent infinite loop
+const changeLocalAuthority = useCallback((value) => {
   setLocalAuthority(value)
-}
+},[])
+
+// const changeLocalAuthority = (value) => {
+//   setLocalAuthority(value)
+// }
 
 useEffect(() => {
 }, [local_authority])

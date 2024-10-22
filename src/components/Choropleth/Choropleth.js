@@ -1,45 +1,38 @@
 // "use client";
 
 import "leaflet/dist/leaflet.css";
-import {GeoJSON, MapContainer, TileLayer, ZoomControl} from "react-leaflet";
-
+import { GeoJSON, MapContainer, TileLayer, ZoomControl } from "react-leaflet";
 
 import "./Choropleth.css";
 
 // import localAuthorities from "../../../../data/hh_size_data.json";
 import areas from "../../data/spatial_data.json";
 
-import { useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 // import { noConflict } from "leaflet";
 
-
 export default function Choropleth({ local_authority, changeLocalAuthority }) {
-  
   // Initial state for selector
   const [isSelect, setIsSelect] = useState({
-    name: local_authority['name'],
-    link: local_authority['link'],
+    name: local_authority["name"],
+    link: local_authority["link"],
   });
-
 
   const [isHighlight, setIsHighlight] = useState({
-    name: local_authority['name'],
-    link: local_authority['link'],
+    name: null,
+    link: null,
   });
-
 
   // When initial state updates, then update parent state
   useEffect(() => {
     changeLocalAuthority({
       name: isSelect["name"],
-      link: isSelect["link"]
-    })
+      link: isSelect["link"],
+    });
 
-
-    console.log('Is select within useEffect');
-    console.log(isSelect);
-  }, [isSelect,changeLocalAuthority]);
-
+    // console.log("Is select within useEffect");
+    // console.log(isSelect);
+  }, [isSelect, changeLocalAuthority]);
 
   const map_box_token =
     "pk.eyJ1IjoibC1nb3JtYW4iLCJhIjoiY20wbW0yYnU5MDRqbjJrcXNyNWcycWQ5ayJ9.mqWPPtqV8lvGzHefYst7XA";
@@ -50,37 +43,33 @@ export default function Choropleth({ local_authority, changeLocalAuthority }) {
 
   const position = [53, -6];
 
-
-
   // Some basic styles
   const styleHighlight = {
     weight: 5,
-    color: "black",
+    color: "darkgrey",
     dashArray: "",
     fillOpacity: 0.7,
   };
 
   const styleSelected = {
     weight: 5,
-    color: "black",
+    color: "darkgrey",
     dashArray: "",
     fillOpacity: 0.7,
     fillColor: "black",
   };
 
   const styleNormal = {
-    weight: 2,
+    weight: 1,
     opacity: 1,
-    color: "white",
+    color: "darkgrey",
     dashArray: "3",
     fillOpacity: 0.7,
   };
 
-
   // A closure function for updating styles
   const styleClosure = (isSelect, isHighlight) => {
     return (feature) => {
- 
       if (feature["properties"]["link"] === isSelect["link"]) {
         return styleSelected;
       }
@@ -91,10 +80,10 @@ export default function Choropleth({ local_authority, changeLocalAuthority }) {
 
       return {
         fillColor: getColor(feature.properties["4 people in household"]), // Adjust based on your GeoJSON properties
-        weight: 2,
+        weight: 1,
         opacity: 1,
-        color: "white",
-        dashArray: "3",
+        color: "darkgrey",
+        dashArray: "",
         fillOpacity: 0.7,
       };
     };
@@ -119,20 +108,17 @@ export default function Choropleth({ local_authority, changeLocalAuthority }) {
       : "#FFEDA0";
   };
 
-  const onEachFeatureClosure = (isSelect, setIsSelect, isHighlight, setIsHighlight) => {
+  const onEachFeatureClosure = (setIsSelect, setIsHighlight) => {
     return (feature, layer) => {
-
-
       layer.on({
-        mouseover: (e) => highlightFeature(e, feature, isSelect, isHighlight, setIsHighlight),
-        mouseout: (e) => resetHighlight(e, feature, isSelect, isHighlight, setIsHighlight),
-        click: (e) => clickFeature(e, feature, isSelect, setIsSelect),
+        mouseover: (e) => highlightFeature(e, feature, setIsHighlight),
+        mouseout: (e) => resetHighlight(e, feature, setIsHighlight),
+        click: (e) => clickFeature(e, feature, setIsSelect),
       });
     };
   };
 
-
-  const highlightFeature = (e, feature, isSelect) => {
+  const highlightFeature = (e, feature, setIsHighlight) => {
     const layer = e.target;
 
     setIsHighlight({
@@ -144,54 +130,32 @@ export default function Choropleth({ local_authority, changeLocalAuthority }) {
     layer.bringToFront();
   };
 
-  const resetHighlight = (e, feature, isSelect) => {
+  const resetHighlight = (e, feature, setIsHighlight) => {
     const layer = e.target;
 
-    // if (feature["properties"]["link"] === isSelect["link"]) {
-    //   layer.setStyle(styleSelected);
-    // } else {
-      
-
-
-      layer.setStyle(styleNormal);
-    
+    layer.setStyle(styleNormal);
 
     layer.bringToFront();
+
+    setIsHighlight({
+      name: null,
+      link: null,
+    });
+
+    // layer.bringToFront();
   };
 
-  const clickFeature = (e, feature, isSelect, setIsSelect) => {
-    
+  const clickFeature = (e, feature, setIsSelect) => {
     const layer = e.target;
 
+    setIsSelect({
+      name: feature["properties"]["LAD23NM"],
+      link: feature["properties"]["link"],
+    });
 
-    // if (feature["properties"]["link"] === isSelect["link"]) {
-
-    //   let new_style = styleNormal;
-    //   new_style.fillColor = getColor(feature.properties["4 people in household"]);
-
-    //   console.log('new style for deselection')
-    //   console.log(new_style)
-    //   layer.setStyle(new_style);
-
-    //   setIsSelect({
-    //     name: "Select local authority by clicking on the map",
-    //     link: false,
-    //   });
-
-
-    // }  
-
-      setIsSelect({
-        name: feature["properties"]["LAD23NM"],
-        link: feature["properties"]["link"],
-      });
-
-      layer.setStyle(styleSelected);
-    
+    layer.setStyle(styleSelected);
 
     layer.bringToFront();
-
-
   };
 
   return (
@@ -199,11 +163,10 @@ export default function Choropleth({ local_authority, changeLocalAuthority }) {
       <TileLayer url={url} attribution={attribution} />
       <GeoJSON
         data={areas}
-        style={styleClosure( isSelect, isHighlight)}
-        onEachFeature={onEachFeatureClosure(isSelect, setIsSelect, isHighlight, setIsHighlight)}
+        style={styleClosure(isSelect, isHighlight)}
+        onEachFeature={onEachFeatureClosure(setIsSelect, setIsHighlight)}
       />
       <ZoomControl position="topright" />
     </MapContainer>
   );
 }
-
