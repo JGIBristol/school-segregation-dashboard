@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/school-segregation-dashboard/static/css/main.7b26bcdd.css",
-    "main.js": "/school-segregation-dashboard/static/js/main.0e94c3a4.js",
+    "main.js": "/school-segregation-dashboard/static/js/main.9a1c475c.js",
     "static/js/453.e3094fe4.chunk.js": "/school-segregation-dashboard/static/js/453.e3094fe4.chunk.js",
     "index.html": "/school-segregation-dashboard/index.html",
     "main.7b26bcdd.css.map": "/school-segregation-dashboard/static/css/main.7b26bcdd.css.map",
-    "main.0e94c3a4.js.map": "/school-segregation-dashboard/static/js/main.0e94c3a4.js.map",
+    "main.9a1c475c.js.map": "/school-segregation-dashboard/static/js/main.9a1c475c.js.map",
     "453.e3094fe4.chunk.js.map": "/school-segregation-dashboard/static/js/453.e3094fe4.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.7b26bcdd.css",
-    "static/js/main.0e94c3a4.js"
+    "static/js/main.9a1c475c.js"
   ]
 }
